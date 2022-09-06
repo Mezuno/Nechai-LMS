@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\QuizController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/quizzez', [QuizController::class, 'index'])->name('quizzes');
+Route::get('/quizzez/{id}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -13,13 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+        Schema::create('questions', function (Blueprint $table) {
+            $table->id('question_id');
+            $table->string('body');
+            $table->foreignId('quiz_id')
+                ->references('quiz_id')
+                ->on('quizzes');
+            $table->foreignId('option_type_id')
+                ->references('option_type_id')
+                ->on('option_types');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('questions');
     }
 };
