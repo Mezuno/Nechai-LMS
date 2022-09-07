@@ -23,7 +23,15 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\Quiz::factory(10)->create();
 
-        \App\Models\OptionType::factory(10)->create();
+        \App\Models\OptionType::factory()->create([
+            'title' => 'radio',
+        ]);
+        \App\Models\OptionType::factory()->create([
+            'title' => 'text',
+        ]);
+        \App\Models\OptionType::factory()->create([
+            'title' => 'checkbox',
+        ]);
 
         \App\Models\Question::factory(100)->create();
 

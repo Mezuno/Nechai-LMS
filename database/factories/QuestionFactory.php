@@ -19,7 +19,7 @@ class QuestionFactory extends Factory
         return [
             'body' => fake()->text,
             'quiz_id' => rand(1,10),
-            'option_type_id' => rand(1,10),
+            'option_type_id' => rand(1,3),
         ];
     }
 }

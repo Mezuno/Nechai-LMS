@@ -20,6 +20,7 @@ return new class extends Migration
                 ->references('quiz_id')
                 ->on('quizzes');
             $table->foreignId('option_type_id')
+                ->default(1)
                 ->references('option_type_id')
                 ->on('option_types');
             $table->timestamps();

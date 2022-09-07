@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('options', function (Blueprint $table) {
             $table->id('option_id');
             $table->string('body');
-            $table->boolean('is_correct');
+            $table->boolean('is_correct')->default(0);
             $table->foreignId('question_id')
                 ->references('question_id')
                 ->on('questions');

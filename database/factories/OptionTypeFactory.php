@@ -16,9 +16,8 @@ class OptionTypeFactory extends Factory
      */
     public function definition()
     {
-        $title = ['radio', 'checkbox', 'text'];
         return [
-            'title' => $title[array_rand($title, 1)],
+            //
         ];
     }
 }
