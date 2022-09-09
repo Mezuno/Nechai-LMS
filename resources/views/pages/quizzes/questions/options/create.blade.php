@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <a class="btn btn-dark mb-3" href="{{ route('quizzes.edit', [$quiz_id]) }}"><i class="fa-solid fa-arrow-left"></i></a>
+                <a class="btn btn-outline-dark mb-3" href="{{ route('quizzes.edit', [$quiz_id]) }}"><i class="fa-solid fa-arrow-left"></i></a>
                 <div class="card">
                     <div class="card-header h1">Создание опции</div>
                     <div class="card-body">

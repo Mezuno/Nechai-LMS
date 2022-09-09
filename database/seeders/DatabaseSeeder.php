@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,14 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         \App\Models\User::factory(10)->create();
+         \App\Models\User::factory(500)->create();
 
          \App\Models\User::factory()->create([
-             'name' => 'Test User',
-             'email' => 'test@example.com',
+             'name' => 'Цыбульский Кирилл Андреевич',
+             'email' => 'mekishido@gmail.com',
+             'password' => Hash::make('123654789gG'),
+             'is_teacher' => 1,
          ]);
 
-        \App\Models\Quiz::factory(10)->create();
+        \App\Models\Quiz::factory(40)->create();
 
         \App\Models\OptionType::factory()->create([
             'title' => 'radio',
@@ -33,8 +36,10 @@ class DatabaseSeeder extends Seeder
             'title' => 'checkbox',
         ]);
 
-        \App\Models\Question::factory(100)->create();
+        \App\Models\Question::factory(160)->create();
 
-        \App\Models\Option::factory(400)->create();
+        \App\Models\Option::factory(640)->create();
+
+        \App\Models\Assignment::factory(1000)->create();
     }
 }

@@ -6,24 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Question extends Model
+class Assignment extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'questions';
+    protected $table = 'assignments';
 
     /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = 'question_id';
+    protected $primaryKey = 'assignment_id';
 
     /**
      * The attributes that aren't mass assignable.
@@ -32,18 +31,8 @@ class Question extends Model
      */
     protected $guarded = [];
 
-    public function type()
+    public function students()
     {
-        return $this->belongsTo(OptionType::class, 'option_type_id', 'option_type_id');
-    }
-
-    public function options()
-    {
-        return $this->hasMany(Option::class, 'question_id', 'question_id');
-    }
-
-    public function correct()
-    {
-        return $this->hasMany(Option::class, 'question_id', 'question_id')->where('is_correct', 1);
+        return $this->hasMany(User::class, 'id', 'student_id');
     }
 }

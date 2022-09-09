@@ -5,14 +5,19 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
 
-                <a class="btn btn-dark mb-3" href="{{ route('quizzes.edit', [$quiz->quiz_id]) }}"><i class="fa-solid fa-arrow-left"></i></a>
+                <div class="d-flex justify-content-between">
+                    <a class="btn btn-dark mb-3" href="{{ route('quizzes.assigned') }}"><i class="fa-solid fa-arrow-left"></i></a>
+                    @if (auth()->user()->is_teacher)
+                        <a class="btn btn-primary mb-3" href="{{ route('quizzes.edit', ['id' => $quiz->quiz_id]) }}"><i class="fa-solid fa-pen"></i></a>
+                    @endif
+                </div>
 
                 @if(!empty(session()->get('result')))
                     <div class="alert alert-success w-100" role="alert">
                         {{ session()->get('result')  }}
                     </div>
                 @endif
-                
+
                 <div class="card">
                     <div class="card-header">
                         <p class="fw-bold mt-2 h3 w-100">{{ $quiz->title }}</p>

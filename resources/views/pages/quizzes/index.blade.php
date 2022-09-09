@@ -10,19 +10,36 @@
                     </div>
                 @endif
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between h2">{{ __('main.quizzes') }}
-                        <a href="{{ route('quizzes.create') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i></a>
+                    <div class="card-header d-flex justify-content-between flex-wrap align-items-center h2">
+                        <div class="d-flex align-items-end">
+                            <p class="mb-0">{{ __('main.quizzes') }}</p>
+                            <a href="{{ route('quizzes.create') }}" class="btn ms-2 mb-0 btn-success">Добавить</a>
+                        </div>
+                        <div class="d-flex align-items-end">
+
+                            <form action="{{ route('quizzes') }}" method="get" class="d-flex">
+                                <input type="text" name="search" value="" hidden>
+                                @if (app('request')->input('search'))
+                                    <button class="btn text-secondary"><i class="fas fa-x"></i></button>
+                                @endif
+                            </form>
+                            <form action="{{ route('quizzes') }}" method="get" class="d-flex">
+                                <input type="text" name="search" value="{{ app('request')->input('search') }}" placeholder="Поиск" class="ms-2 mb-0 p-2 rounded-2 border h6">
+                                <button class="btn text-secondary ms-2"><i class="fas fa-search"></i></button>
+                            </form>
+
+                        </div>
                     </div>
 
-                    @foreach($quizzes as $quiz)
-                        <div class="card-body border-top d-flex justify-content-between">
-                            <a class="btn">{{ $quiz->title }}</a>
+                    @forelse($quizzes as $quiz)
+                        <div class="card-body border-top d-flex align-items-center justify-content-between">
+                            <p class="mb-0 w-50">{{ $quiz->title }}</p>
                             @if ($quiz->deleted_at == NULL)
                             <div class="">
-                                <a href="{{ route('quizzes.edit', ['id' => $quiz->quiz_id]) }}" class="btn btn-primary">
+                                <a href="{{ route('quizzes.edit', ['id' => $quiz->quiz_id]) }}" class="btn btn-outline-primary">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
-                                <button class="deleteButton btn btn-danger"
+                                <button class="deleteButton btn btn-outline-danger"
                                         onclick="document.getElementById('deleteModal{{ $quiz->quiz_id }}').style.display = 'flex'">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
@@ -31,7 +48,7 @@
                                 <form method="post" action="{{ route('quizzes.restore', ['id' => $quiz->quiz_id]) }}">
                                     @method('patch')
                                     @csrf
-                                    <button type="submit" class="btn btn-warning">
+                                    <button type="submit" class="btn btn-outline-warning">
                                         <i class="fa-solid fa-trash-arrow-up"></i>
                                     </button>
                                 </form>
@@ -61,13 +78,13 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
-
-
+                    @empty
+                        <div class="card-body border-top d-flex justify-content-between">
+                            Тесты не найдены ;с
+                        </div>
+                    @endforelse
                 </div>
-
-                <div class="mt-3">{{ $quizzes->links() }}</div>
-
+                <div class="mt-3">{{ $quizzes->withQueryString()->links() }}</div>
             </div>
         </div>
     </div>

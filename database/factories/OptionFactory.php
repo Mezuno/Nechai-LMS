@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Question;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,9 +18,9 @@ class OptionFactory extends Factory
     public function definition()
     {
         return [
-            'body' => fake()->text,
+            'body' => fake()->text(70),
             'is_correct' => rand(0,1),
-            'question_id' => rand(1,100),
+            'question_id' => Question::get('question_id')->random()->question_id,
         ];
     }
 }

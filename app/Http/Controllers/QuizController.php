@@ -7,22 +7,38 @@ use App\Http\Requests\QuestionCreateRequest;
 use App\Http\Requests\QuestionUpdateRequest;
 use App\Http\Requests\QuizCreateRequest;
 use App\Http\Requests\QuizUpdateRequest;
+use App\Models\Assignment;
 use App\Models\Option;
 use App\Models\OptionType;
 use App\Models\Question;
 use App\Models\Quiz;
+use App\Models\Statistic;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $searchParams = $request->input('search');
         $quizzes = Quiz::withTrashed()
             ->where('quiz_id', '>', 0)
             ->orderByDesc('quiz_id')
+            ->search($searchParams)
             ->paginate(8);
         return view('pages.quizzes.index', compact('quizzes'));
+    }
+
+    public function assigned()
+    {
+        $quizzes = auth()->user()
+            ->assignedQuizzes()
+            ->with('status')
+            ->orderByDesc('quiz_id')
+            ->paginate(8);
+        return view('pages.quizzes.assigned', compact('quizzes'));
     }
 
     public function edit(int $id)
@@ -40,6 +56,16 @@ class QuizController extends Controller
     public function update(QuizUpdateRequest $request, int $id)
     {
         $validated = $request->validated();
+
+        $questions = Question::where('quiz_id', $id)
+            ->withCount('correct')
+            ->get();
+        $correctCount = 0;
+        foreach ($questions as $question) {
+            $correctCount += $question->correct_count;
+        }
+        $validated['max_points'] = $correctCount;
+
         Quiz::where('quiz_id', $id)->update($validated);
         return redirect()->route('quizzes.edit', ['id' => $id])
             ->with(['success' => __('success.'.__FUNCTION__.'Quiz')]);
@@ -48,6 +74,7 @@ class QuizController extends Controller
     public function play(int $id)
     {
         $quiz = Quiz::where('quiz_id', $id)->get()->first();
+        $this->authorize('play', [$quiz]);
         $questions = Question::where('quiz_id', $id)
             ->with('type')
             ->with('options')
@@ -74,7 +101,6 @@ class QuizController extends Controller
                     if ($request->input($question->question_id) && $request->input($question->question_id) == $option->option_id) {
                         if ($request->input($question->question_id) == $option->option_id && $option->is_correct) {
                             $radioAnswers++;
-//                            dump('Correct answer '.$question->question_id.' '.$option->option_id);
                         }
                     }
                     if ($option->is_correct) {
@@ -84,20 +110,37 @@ class QuizController extends Controller
                     if ($request->input($question->question_id)) {
                         foreach ($request->input($question->question_id) as $answer) {
                             if ($answer == $option->option_id && $option->is_correct) {
-                                $checkboxAnswers += 0.5;
-//                                dump('Correct answer '.$question->question_id.' '.$option->option_id);
+                                $checkboxAnswers += 1;
+                            } elseif ($answer == $option->option_id && !$option->is_correct) {
+                                $checkboxAnswers -= 1;
                             }
                         }
                     }
                     if ($option->is_correct) {
-                        $maxPoints += 0.5;
+                        $maxPoints += 1;
                     }
                 }
             }
         }
-//        dd('Вы набрали '.$radioAnswers+$checkboxAnswers.' из '.$maxPoints);
-        return redirect()->route('quizzes.play', ['id' => $id])
-            ->with(['result' => 'Вы набрали '.$radioAnswers+$checkboxAnswers.' из '.$maxPoints.' баллов']);
+
+        $result = $radioAnswers + $checkboxAnswers;
+
+        if ($result < 0) {
+            $result = 0;
+        }
+
+        Statistic::create(['quiz_id' => $id, 'student_id' => auth()->id(), 'result' => $result]);
+
+        Quiz::where('quiz_id', $id)->update(['max_points' => $maxPoints]);
+
+        return redirect()->route('quizzes.result', ['id' => $id])
+            ->with(['result' => 'Вы набрали '.$result.' из '.$maxPoints.' баллов']);
+    }
+
+    public function result(int $id)
+    {
+        $quiz = Quiz::where('quiz_id', $id)->get()->first();
+        return view('pages.quizzes.result', compact('quiz'));
     }
 
     public function store(QuizCreateRequest $request)
@@ -192,6 +235,55 @@ class QuizController extends Controller
     {
         Option::where('option_id', $optionId)->delete();
         return redirect()->route('quizzes.edit.questions', ['id' => $id, 'question_id' => $questionId])
+            ->with(['success' => __('success.'.__FUNCTION__.'Quiz')]);
+    }
+
+    public function statistics(Request $request)
+    {
+        $searchByNameParam = $request->input('searchByName');
+        $searchByTestParam = $request->input('searchByTest');
+        $statistics = Statistic::whereHas('student', function ($query) use ($searchByNameParam){
+                                    $query->where('name', 'like', '%'.$searchByNameParam.'%');
+                                })
+                                ->whereHas('quiz', function ($query) use ($searchByTestParam){
+                                    $query->where('title', 'like', '%'.$searchByTestParam.'%');
+                                })
+                                ->orderByDesc('statistic_id')
+                                ->paginate(8);
+
+        return view('pages.quizzes.statistics', compact('statistics'));
+    }
+
+    public function assign(int $quiz_id)
+    {
+        $assignments = Assignment::where('quiz_id', $quiz_id)
+            ->with('students')
+            ->orderByDesc('assignment_id')
+            ->paginate(8);
+        return view('pages.quizzes.assign', compact('assignments', 'quiz_id'));
+    }
+
+    public function assignAll(int $quiz_id)
+    {
+        $assignments = User::whereDoesntHave('assignments', function(Builder $query) use ($quiz_id) {
+            $query->where('quiz_id', '=', $quiz_id);
+        })
+            ->orderByDesc('id')
+            ->paginate(8);
+        return view('pages.quizzes.assignAll', compact('assignments', 'quiz_id'));
+    }
+
+    public function createAssign(int $id, int $userId)
+    {
+        Assignment::create(['quiz_id' => $id, 'student_id' => $userId]);
+        return redirect()->route('quizzes.assign.all', ['id' => $id])
+            ->with(['success' => __('success.'.__FUNCTION__.'Quiz')]);
+    }
+
+    public function destroyAssign(int $id, int $assignmentId)
+    {
+        Assignment::where('assignment_id', $assignmentId)->delete();
+        return redirect()->route('quizzes.assign', ['id' => $id])
             ->with(['success' => __('success.'.__FUNCTION__.'Quiz')]);
     }
 }

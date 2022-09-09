@@ -13,11 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('quizzes', function (Blueprint $table) {
-            $table->id('quiz_id');
+        Schema::create('news', function (Blueprint $table) {
+            $table->id('news_id');
             $table->string('title');
-            $table->string('description')->nullable();
-            $table->integer('max_points')->default(0);
+            $table->text('body');
+            $table->string('video_link')->nullable();
+            $table->string('img_link')->nullable();
+            $table->integer('likes')->default(0);
+            $table->foreignId('author_id')
+                ->references('id')
+                ->on('users');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quizzes');
+        Schema::dropIfExists('news');
     }
 };

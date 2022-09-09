@@ -5,7 +5,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <a class="btn btn-dark mb-3" href="{{ route('quizzes.edit', [$question->quiz_id]) }}"><i class="fa-solid fa-arrow-left"></i></a>
+                <a class="btn btn-outline-dark mb-3" href="{{ route('quizzes.edit', [$question->quiz_id]) }}"><i class="fa-solid fa-arrow-left"></i></a>
 
                 @if(!empty(session()->get('success')))
                     <div class="alert alert-success w-100" role="alert">
