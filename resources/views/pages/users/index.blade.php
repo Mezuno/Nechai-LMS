@@ -41,7 +41,16 @@
 
                     @foreach($users as $user)
                         <div class="card-body border-top d-flex align-items-center justify-content-between">
-                            <p class="mb-0">{{ $user->name }}</p>
+                            <div>
+                                @if(mb_substr($user->avatar_filename,0,4) == 'http')
+                                    <img src="{{ URL::asset($user->avatar_filename) }}" width="40" height="40" alt="avatar" class="rounded-circle border border-dark mb-0">
+                                @elseif($user->avatar_filename && file_exists('img/avatars/'.$user->avatar_filename))
+                                    <img src="{{ URL::asset('img/avatars/'.$user->avatar_filename) }}" width="40" height="40" alt="avatar" class="rounded-circle border border-dark mb-0">
+                                @else
+                                    <img src="{{ URL::asset('img/default-avatar.png') }}" width="40" height="40" alt="avatar" class="rounded-circle border border-dark mb-0">
+                                @endif
+                                <a href="{{ route('users.view', ['id' => $user->id]) }}" class="btn ms-2 mb-0">{{ $user->name }}</a>
+                            </div>
                             @if ($user->deleted_at == NULL)
                                 <div class="">
                                     <a href="{{ route('users.edit', ['id' => $user->id]) }}" class="btn btn-outline-primary">

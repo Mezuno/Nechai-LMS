@@ -14,23 +14,23 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ URL::asset('css/main.css') }}">
 
     <!-- Replace the Bootstrap CSS with the
          Bootstrap-Dark Variant CSS -->
-{{--    <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-night.min.css" rel="stylesheet">--}}
+{{--        <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-night.min.css" rel="stylesheet">--}}
 
     <!-- Scripts -->
     <script src="https://kit.fontawesome.com/9982e2a196.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-{{--    @vite(['resources/sass/app.scss', 'resources/js/app.js'])--}}
+    {{--    @vite(['resources/sass/app.scss', 'resources/js/app.js'])--}}
 </head>
 <body>
 
-<div class="qwe"></div>
-<div class="asd"></div>
-<div class="zxc"></div>
+<div class="bubble1"></div>
+<div class="bubble2"></div>
+<div class="bubble3"></div>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container">

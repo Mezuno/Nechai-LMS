@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserUpdateAvatarRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\Assignment;
 use App\Models\User;
@@ -10,6 +11,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Intervention\Image\Facades\Image;
+use function PHPUnit\Framework\directoryExists;
 
 class UserController extends Controller
 {
@@ -54,9 +57,11 @@ class UserController extends Controller
         dd($validated);
     }
 
-    public function view()
+    public function view(int $id)
     {
-        return view('pages.users.view');
+        $user = User::where('id', $id)->first();
+        $this->authorize('view', [$user]);
+        return view('pages.users.view', compact('user'));
     }
 
     public function destroy(int $id)
@@ -95,5 +100,27 @@ class UserController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('login');
+    }
+
+    public function updateAvatar(UserUpdateAvatarRequest $request): RedirectResponse
+    {
+        ini_set('memory_limit','256M');
+
+        if (empty($request)) {
+            return redirect()->route('users.view', ['id' => auth()->id()]);
+        }
+        $avatar = $request->file('avatar');
+
+        auth()->user()->clearAvatars();
+
+        $filename = auth()->id() . '.' . $avatar->getClientOriginalExtension();
+
+        $img = Image::make($avatar)->fit(300, 300);
+        $img->save( public_path('img/avatars/' . $filename ) );
+
+        auth()->user()->avatar_filename = $filename;
+        auth()->user()->save();
+
+        return redirect()->route('users.view', ['id' => auth()->id()]);
     }
 }

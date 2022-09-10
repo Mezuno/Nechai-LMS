@@ -1,0 +1,28 @@
+.bubble3, .bubble2, .bubble1 {
+  display: block;
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: rgba(145, 152, 229, 0.3);
+}
+
+.bubble1 {
+  width: 400px;
+  height: 400px;
+  left: 300px;
+  top: 100px;
+}
+
+.bubble2 {
+  width: 200px;
+  height: 200px;
+  left: 400px;
+  top: 650px;
+}
+
+.bubble3 {
+  width: 300px;
+  height: 300px;
+  left: 650px;
+  top: 400px;
+}

@@ -74,4 +74,19 @@ class User extends Authenticatable
         return $query->where('name', 'like', '%'.$searchParam.'%')
             ->orwhere('email', 'like', '%'.$searchParam.'%');
     }
+
+    public function getAvatarsPath()
+    {
+        return "img/avatars/";
+    }
+
+    public function clearAvatars()
+    {
+        $id = auth()->id();
+        $path = "img/avatars";
+
+        foreach ( glob( public_path("$path/$id.*") ) as $avatar ) {
+            unlink($avatar);
+        }
+    }
 }

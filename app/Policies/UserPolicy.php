@@ -30,4 +30,9 @@ class UserPolicy
     {
         return $currentUser->is_teacher || $currentUser->id == $user->id;
     }
+
+    public function view(User $currentUser, User $user)
+    {
+        return $currentUser->is_teacher || $currentUser->id == $user->id;
+    }
 }

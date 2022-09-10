@@ -35,6 +35,7 @@ Route::prefix('/news')->middleware(['auth.admin'])->group(function() {
 Route::prefix('/users/{id}')->middleware(['auth'])->group(function() {
     Route::get('', [UserController::class, 'view'])->name('users.view');
     Route::get('/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::patch('/avatar', [UserController::class, 'updateAvatar'])->name('users.update.avatar');
     Route::patch('', [UserController::class, 'update'])->name('users.update');
 });
 

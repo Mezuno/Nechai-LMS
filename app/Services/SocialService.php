@@ -23,7 +23,7 @@ class SocialService
                     'email' => "$email",
                     'password' => Hash::make(Str::random(60)),
                     'name' => $name,
-//                    'avatar_filename' => $avatar,
+                    'avatar_filename' => $avatar,
                     'email_verified_at' => NOW(),
                     'remember_token' => Str::random(20),
                 ]

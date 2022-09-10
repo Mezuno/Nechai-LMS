@@ -1,0 +1,35 @@
+$color: red;
+
+$coolColor: #9198e5;
+$coolColor2: #e66465;
+
+// Рубрика ээээээээээээээкскрименты
+%circle {
+    display: block;
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    background: rgba(145, 152, 229, 0.3);
+}
+.bubble1 {
+    width: 400px;
+    height: 400px;
+    left: 300px;
+    top: 100px;
+    @extend %circle;
+}
+.bubble2 {
+    width: 200px;
+    height: 200px;
+    left: 400px;
+    top: 650px;
+    @extend %circle;
+}
+.bubble3 {
+    width: 300px;
+    height: 300px;
+    left: 650px;
+    top: 400px;
+    @extend %circle;
+}
+
