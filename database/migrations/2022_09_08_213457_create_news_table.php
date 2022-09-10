@@ -23,6 +23,10 @@ return new class extends Migration
             $table->foreignId('author_id')
                 ->references('id')
                 ->on('users');
+            $table->foreignId('news_category_id')
+                ->nullable()
+                ->references('news_category_id')
+                ->on('news_categories');
             $table->timestamps();
             $table->softDeletes();
         });

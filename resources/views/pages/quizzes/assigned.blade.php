@@ -22,9 +22,9 @@
                         </a>
                         @else
                             <div class="d-flex align-items-center">
-                                <p class="mb-0 text-success">
-                                    Результат: {{ $quiz->status->result }} из {{ $quiz->max_points }} баллов
-                                </p>
+{{--                                <p class="mb-0 text-success">--}}
+{{--                                    Результат: {{ $quiz->status->result }} из {{ $quiz->max_points }} баллов--}}
+{{--                                </p>--}}
                                 <div class="btn btn-secondary ms-3">
                                     <i class="fa-solid fa-check"></i>
                                 </div>

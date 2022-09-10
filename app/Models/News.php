@@ -36,4 +36,14 @@ class News extends Model
     {
         return $this->belongsTo(User::class, 'author_id', 'id');
     }
+
+    public function category()
+    {
+        return $this->belongsTo(NewsCategory::class, 'news_category_id', 'news_category_id');
+    }
+
+    public function scopeSearch($query, $searchParam)
+    {
+        return $query->where('news_category_id', 'like', '%'.$searchParam.'%');
+    }
 }

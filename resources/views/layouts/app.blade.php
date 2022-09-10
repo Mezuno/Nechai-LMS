@@ -14,6 +14,8 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
     <!-- Replace the Bootstrap CSS with the
          Bootstrap-Dark Variant CSS -->
 {{--    <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-night.min.css" rel="stylesheet">--}}
@@ -25,6 +27,10 @@
 {{--    @vite(['resources/sass/app.scss', 'resources/js/app.js'])--}}
 </head>
 <body>
+
+<div class="qwe"></div>
+<div class="asd"></div>
+<div class="zxc"></div>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container">
@@ -38,6 +44,21 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     @auth
+                        @if (auth()->user()->is_teacher)
+                            <ul class="navbar-nav">
+                                <li class="nav-item dropdown">
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        Админ
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('quizzes') }}">{{ __('main.quizzes') }}</a>
+                                        <a class="dropdown-item" href="{{ route('quizzes.statistics') }}">{{ __('main.statistics') }}</a>
+                                        <a class="dropdown-item" href="{{ route('users') }}">{{ __('main.users') }}</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        @endif
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('quizzes.assigned') }}">{{ __('main.assignedQuizzes') }}</a>
@@ -53,23 +74,6 @@
                                 <a class="nav-link" href="{{ route('about') }}">{{ __('main.about') }}</a>
                             </li>
                         </ul>
-                        @if (auth()->user()->is_teacher)
-                            <ul class="navbar-nav ms-2">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('quizzes') }}">{{ __('main.quizzes') }}</a>
-                                </li>
-                            </ul>
-                            <ul class="navbar-nav ms-2">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('quizzes.statistics') }}">{{ __('main.statistics') }}</a>
-                                </li>
-                            </ul>
-                            <ul class="navbar-nav ms-2 me-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('users') }}">{{ __('main.users') }}</a>
-                                </li>
-                            </ul>
-                        @endif
                     @endauth
 
                     <!-- Right Side Of Navbar -->

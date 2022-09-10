@@ -47,6 +47,11 @@
                                     <label class="form-check-label" for="remember">
                                         {{ __('Remember Me') }}
                                     </label>
+
+                                    @foreach($errors as $error)
+                                        {{ $error }}
+                                    @endforeach
+                                    <a href="{{ route('vk.auth') }}">Авторизироваться через VK</a>
                                 </div>
                             </div>
                         </div>

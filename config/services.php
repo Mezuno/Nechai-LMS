@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'vkontakte' => [
+        'client_id' => env('SOCIALITE_VK_CLIENT_ID'),
+        'client_secret' => env('SOCIALITE_VK_CLIENT_SECRET'),
+        'redirect' => env('SOCIALITE_VK_REDIRECT'),
+    ],
+
 ];

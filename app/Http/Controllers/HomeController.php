@@ -24,6 +24,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return redirect()->route('users.view', ['id' => auth()->id()]);
+        return redirect()->route('about');
     }
 }

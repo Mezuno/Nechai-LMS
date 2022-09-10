@@ -35,7 +35,7 @@ class QuizController extends Controller
     {
         $quizzes = auth()->user()
             ->assignedQuizzes()
-            ->with('status')
+            ->with('statistics')
             ->orderByDesc('quiz_id')
             ->paginate(8);
         return view('pages.quizzes.assigned', compact('quizzes'));

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\Assignment;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -45,6 +48,12 @@ class UserController extends Controller
         return view('pages.users.create');
     }
 
+    public function store(UserCreateRequest $request)
+    {
+        $validated = $request->validated();
+        dd($validated);
+    }
+
     public function view()
     {
         return view('pages.users.view');
@@ -68,5 +77,23 @@ class UserController extends Controller
         User::where('id', $id)->restore();
         return redirect()->route('users')
             ->with(['success' => __('success.'.__FUNCTION__.'User')]);
+    }
+
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('login');
     }
 }

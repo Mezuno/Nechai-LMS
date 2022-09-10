@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NewsCreateRequest;
 use App\Models\News;
+use App\Models\NewsCategory;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $category = $request->input('category');
         $news = News::where('news_id', '>', 0)
             ->with('author')
+            ->with('category')
             ->orderByDesc('news_id')
+            ->search($category)
             ->paginate(8);
-        return view('pages.news.index', compact('news'));
+        $categories = NewsCategory::all();
+        return view('pages.news.index', compact('news', 'categories'));
     }
 
     public function store(NewsCreateRequest $request)
@@ -41,5 +46,13 @@ class NewsController extends Controller
     public function restore()
     {
 
+    }
+
+    public function storeCategory(Request $request)
+    {
+        $validated = $request->all();
+        NewsCategory::create($validated);
+        return redirect()->route('news')
+            ->with(['success' => __('success.'. __FUNCTION__ .'News')]);
     }
 }

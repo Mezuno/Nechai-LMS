@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\SocialController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -18,10 +19,13 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/about', [App\Http\Controllers\MainController::class, 'about'])->name('about');
-Route::get('/news', [App\Http\Controllers\NewsController::class, 'index'])->name('news');
+Route::prefix('/')->middleware(['auth'])->group(function() {
+    Route::get('/about', [App\Http\Controllers\MainController::class, 'about'])->name('about');
+    Route::get('/news', [App\Http\Controllers\NewsController::class, 'index'])->name('news');
+});
 
 Route::prefix('/news')->middleware(['auth.admin'])->group(function() {
+    Route::post('/category/', [App\Http\Controllers\NewsController::class, 'storeCategory'])->name('news.category.store');
     Route::post('', [App\Http\Controllers\NewsController::class, 'store'])->name('news.store');
     Route::patch('/{id}', [App\Http\Controllers\NewsController::class, 'update'])->name('news.update');
     Route::delete('/{id}', [App\Http\Controllers\NewsController::class, 'destroy'])->name('news.delete');
@@ -77,4 +81,11 @@ Route::prefix('/quizzes')->middleware(['auth.admin'])->group(function() {
     Route::get('/statistics', [QuizController::class, 'statistics'])->name('quizzes.statistics');
 });
 
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('/vk/auth', [SocialController::class, 'index'])->name('vk.auth');
+    Route::get('/vk/auth/callback', [SocialController::class, 'callBack']);
+});
+
 Auth::routes();
+
+Route::get('/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth');

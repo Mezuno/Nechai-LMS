@@ -59,14 +59,19 @@ class User extends Authenticatable
         return $this->hasMany(Assignment::class, 'student_id', 'id');
     }
 
+    public function statistic()
+    {
+        return $this->hasOne(Statistic::class, 'student_id', 'id');
+    }
+
+    public function statistics()
+    {
+        return $this->hasMany(Statistic::class, 'student_id', 'id');
+    }
+
     public function scopeSearch($query, $searchParam)
     {
         return $query->where('name', 'like', '%'.$searchParam.'%')
             ->orwhere('email', 'like', '%'.$searchParam.'%');
-    }
-
-    public function statistic()
-    {
-        return $this->hasOne(Statistic::class, 'student_id', 'id');
     }
 }
