@@ -27,10 +27,17 @@
     {{--    @vite(['resources/sass/app.scss', 'resources/js/app.js'])--}}
 </head>
 <body>
+@if((new \Jenssegers\Agent\Agent())->isDesktop())
+<div class="bubble_1 bg-obj"></div>
+<div class="bubble_2 bg-obj"></div>
+<div class="bubble_3 bg-obj"></div>
+<div class="square_1 bg-obj"></div>
+<div class="square_2 bg-obj"></div>
+<div class="triangle_1 bg-obj"></div>
+<div class="triangle_2 bg-obj"></div>
+<div class="triangle_3 bg-obj"></div>
+@endif
 
-<div class="bubble1"></div>
-<div class="bubble2"></div>
-<div class="bubble3"></div>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container">

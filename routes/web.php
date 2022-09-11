@@ -32,11 +32,11 @@ Route::prefix('/news')->middleware(['auth.admin'])->group(function() {
     Route::patch('/{id}', [App\Http\Controllers\NewsController::class, 'restore'])->name('news.restore');
 });
 
-Route::prefix('/users/{id}')->middleware(['auth'])->group(function() {
-    Route::get('', [UserController::class, 'view'])->name('users.view');
-    Route::get('/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::patch('/avatar', [UserController::class, 'updateAvatar'])->name('users.update.avatar');
-    Route::patch('', [UserController::class, 'update'])->name('users.update');
+Route::prefix('/users')->middleware(['auth'])->group(function() {
+    Route::get('/{id}', [UserController::class, 'view'])->name('users.view')->where('id', '[0-9]+');
+    Route::get('/{id}/edit', [UserController::class, 'edit'])->name('users.edit')->where('id', '[0-9]+');
+    Route::patch('/{id}/avatar', [UserController::class, 'updateAvatar'])->name('users.update.avatar')->where('id', '[0-9]+');
+    Route::patch('/{id}', [UserController::class, 'update'])->name('users.update')->where('id', '[0-9]+');
 });
 
 Route::prefix('/users')->middleware(['auth.admin'])->group(function() {
@@ -63,11 +63,12 @@ Route::prefix('/quizzes')->middleware(['auth.admin'])->group(function() {
     Route::patch('/{id}/', [QuizController::class, 'update'])->name('quizzes.update');
     Route::delete('/{id}/delete', [QuizController::class, 'destroy'])->name('quizzes.delete');
     Route::patch('/{id}/restore', [QuizController::class, 'restore'])->name('quizzes.restore');
+
     Route::get('/{id}/assign', [QuizController::class, 'assign'])->name('quizzes.assign');
     Route::get('/{id}/assign/all', [QuizController::class, 'assignAll'])->name('quizzes.assign.all');
-
-    Route::post('/{id}/assign/{user_id}', [QuizController::class, 'createAssign'])->name('quizzes.assign.create');
+    Route::post('/{id}/assign/{user_id}', [QuizController::class, 'createAssign'])->name('quizzes.assign.create')->where('user_id', '[0-9]+');
     Route::delete('/{id}/assign/{assignment_id}', [QuizController::class, 'destroyAssign'])->name('quizzes.assign.delete');
+    Route::post('/{id}/assign/mult', [QuizController::class, 'multAssign'])->name('quizzes.assign.mult');
 
     Route::get('/{id}/edit/{question_id}', [QuizController::class, 'editQuestion'])->name('quizzes.edit.questions');
     Route::patch('/{id}/update/{question_id}', [QuizController::class, 'updateQuestion'])->name('quizzes.update.questions');

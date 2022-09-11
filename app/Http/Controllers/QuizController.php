@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Mail\EmailAssignNewUser;
+use App\Http\Requests\AssignMultRequest;
 use App\Http\Requests\OptionCreateRequest;
 use App\Http\Requests\QuestionCreateRequest;
 use App\Http\Requests\QuestionUpdateRequest;
@@ -17,6 +19,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class QuizController extends Controller
 {
@@ -275,7 +280,7 @@ class QuizController extends Controller
 
     public function createAssign(int $id, int $userId)
     {
-        Assignment::create(['quiz_id' => $id, 'student_id' => $userId]);
+        Assignment::firstOrCreate(['quiz_id' => $id, 'student_id' => $userId], ['quiz_id' => $id, 'student_id' => $userId]);
         return redirect()->route('quizzes.assign.all', ['id' => $id])
             ->with(['success' => __('success.'.__FUNCTION__.'Quiz')]);
     }
@@ -284,6 +289,54 @@ class QuizController extends Controller
     {
         Assignment::where('assignment_id', $assignmentId)->delete();
         return redirect()->route('quizzes.assign', ['id' => $id])
+            ->with(['success' => __('success.'.__FUNCTION__.'Quiz')]);
+    }
+
+    public function multAssign(AssignMultRequest $request, int $id)
+    {
+//        if (empty($request->input('studentEmails'))) {
+//            return redirect()->route('courses.edit.assignments', ['id' => $id, 'state' => 'all'])
+//                ->with(['success' => __('success.'.__FUNCTION__.'Course')]);
+//        }
+
+        $emails = preg_split('/\n|\r\n?/', $request->validated('emails'));
+
+        for ($i = 0; $i < count($emails); $i++) {
+            $emails[$i] = trim($emails[$i]);
+        }
+
+        $userIds = [];
+        $quiz = Quiz::where('quiz_id', $id)->get()->first();
+
+        foreach($emails as $email) {
+            if(!($user = User::where('email', $email)->get()->first())) {
+                $password = Str::random();
+                $user = User::create([
+                    'name' => 'Temporary Name',
+                    'email' => $email,
+                    'password' => Hash::make($password),
+                    'is_teacher' => 0,
+                    'email_verified_at' => now()
+                ]);
+
+                Mail::to($email)->send(new EmailAssignNewUser($user, $password, $quiz));
+            }
+
+            $userIds[] = $user->id;
+        }
+
+        foreach ($userIds as $userId) {
+            $assignData[] = ['student_id' => $userId, 'quiz_id' => $id];
+        }
+
+        $createCount = 0;
+        for ($i = 0; $i < count($assignData); $i++) {
+            if (Assignment::firstOrCreate($assignData[$i])) {
+                $createCount++;
+            }
+        }
+
+        return redirect()->route('quizzes.assign.all', ['id' => $id])
             ->with(['success' => __('success.'.__FUNCTION__.'Quiz')]);
     }
 }

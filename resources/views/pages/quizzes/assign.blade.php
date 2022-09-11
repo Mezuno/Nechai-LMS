@@ -19,8 +19,9 @@
                     </div>
 
                     @forelse($assignments as $assignment)
-                        <div class="card-body border-top d-flex justify-content-between">
-                            <a class="btn">{{ $assignment->students->first()->name }}</a>
+                        <div class="card-body border-top d-flex justify-content-between align-items-center">
+                            <p class="w-50 mb-0 pb-0">{{ $assignment->students->first()->name }}</p>
+                            <p class="mb-0 pb-0">{{ $assignment->students->first()->email }}</p>
                             <div class="">
                                 <button class="deleteButton btn btn-outline-danger"
                                         onclick="document.getElementById('deleteModal{{ $assignment->students->first()->id }}').style.display = 'flex'">

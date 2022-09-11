@@ -54,7 +54,10 @@ class UserController extends Controller
     public function store(UserCreateRequest $request)
     {
         $validated = $request->validated();
-        dd($validated);
+        $validated['password'] = Hash::make($validated['password']);
+        User::firstOrCreate(['email' => $validated['email']], $validated);
+        return redirect()->route('users')
+            ->with(['success' => __('success.'.__FUNCTION__.'User')]);
     }
 
     public function view(int $id)

@@ -78,7 +78,7 @@
                     </div>
                 @endif
 
-                <div class="d-flex">
+                <div class="d-flex flex-wrap">
                     <form action="{{ route('news') }}">
                         <input name="category" value="" type="text" hidden>
                         <button class="alert alert-danger p-1">Все</button>
@@ -86,7 +86,9 @@
                     @foreach($categories as $category)
                         <form action="{{ route('news') }}">
                             <input name="category" value="{{ $category->news_category_id }}" type="text" hidden>
-                            <button class="ms-2 alert alert-primary p-1">{{ $category->title }}</button>
+                            <button class="ms-2 alert p-1
+                            @if(app('request')->input('category') && app('request')->input('category') == $category->news_category_id) alert-primary
+                            @else alert-secondary @endif">{{ $category->title }}</button>
                         </form>
                     @endforeach
                 </div>
